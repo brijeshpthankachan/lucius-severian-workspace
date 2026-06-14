@@ -49,7 +49,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: . # Run from the root context so Docker can see pnpm-workspace files
+          context: ./lucius-severian/web-ui
           file: ./lucius-severian/web-ui/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
