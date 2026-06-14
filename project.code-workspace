@@ -7,5 +7,9 @@
 			"name": "gitops-k8s-config",
 			"path": "../gitops-k8s-config"
 		}
-	]
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
 }
+
