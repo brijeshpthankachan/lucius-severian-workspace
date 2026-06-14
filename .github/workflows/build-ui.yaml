@@ -1,0 +1,59 @@
+name: Build and Push Web UI
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'lucius-severian/web-ui/**' # Only trigger if files in the web-ui folder change
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}-web-ui
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write # Required to upload the image to GHCR
+
+    steps:
+      # 1. Download the source code from the monorepo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Set up the Docker build engine
+      - name: Set up Docker Buildx
+        uses: actions/setup-buildx-action@v3
+
+      # 3. Log into GitHub Container Registry using the built-in temporary GitHub token
+      - name: Log in to the Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 4. Extract metadata (tags, labels) for Docker
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest
+            type=sha,format=short
+
+      # 5. Build and upload the image
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: . # Run from the root context so Docker can see pnpm-workspace files if needed
+          file: ./lucius-severian/web-ui/Dockerfile # Path to your specific Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha # Use GitHub Actions caching to make future builds blazing fast
+          cache-to: type=gha,mode=max
+
