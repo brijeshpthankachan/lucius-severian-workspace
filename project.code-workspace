@@ -1,3 +1,11 @@
 {
-"folders" :[{"path":"./lucius-severian/web-ui", "name": "ls-website"},{"path":"../gitops-k8s-config","name":"gitops-k8s-config"}, {"path":"./lucius-severian/api-services", "name": "ls-api"}]
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "gitops-k8s-config",
+			"path": "../gitops-k8s-config"
+		}
+	]
 }
