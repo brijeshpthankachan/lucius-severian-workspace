@@ -11,6 +11,7 @@
 
     <div class="flex items-center gap-6">
       <a routerLink="/" class="text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors">Catalog</a>
+      
       <a routerLink="/cart" class="group -m-2 flex items-center p-2">
         <div class="relative">
           <svg class="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -24,6 +25,20 @@
         </div>
         <span class="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">Cart</span>
       </a>
+
+      <div class="h-6 w-px bg-gray-200" aria-hidden="true"></div>
+
+      @if (authService.isAuthenticated()) {
+        <div class="flex items-center gap-3">
+          <div class="flex flex-col items-end">
+            <span class="text-xs font-semibold text-gray-900 leading-none">{{ authService.user()?.username }}</span>
+            <button (click)="logout()" class="text-[10px] text-gray-500 hover:text-red-600 transition-colors font-medium">Sign out</button>
+          </div>
+          <img [src]="authService.user()?.avatarUrl" class="h-8 w-8 rounded-full border border-gray-200" alt="User avatar">
+        </div>
+      } @else {
+        <a routerLink="/login" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors">Sign in</a>
+      }
     </div>
   </nav>
 </header>
