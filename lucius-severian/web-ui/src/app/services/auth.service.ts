@@ -1,11 +1,13 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { User } from '../models/user';
+import { AnalyticsService } from './analytics.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private currentUser = signal<User | null>(null);
+  private analytics = inject(AnalyticsService);
 
   readonly user = computed(() => this.currentUser());
   readonly isAuthenticated = computed(() => !!this.currentUser());
@@ -13,7 +15,9 @@ export class AuthService {
   constructor() {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
-      this.currentUser.set(JSON.parse(savedUser));
+      const user = JSON.parse(savedUser);
+      this.currentUser.set(user);
+      this.analytics.trackEvent('session_restore', { username: user.username });
     }
   }
 
@@ -27,9 +31,14 @@ export class AuthService {
     };
     this.currentUser.set(user);
     localStorage.setItem('user', JSON.stringify(user));
+    this.analytics.trackEvent('login', { username: user.username });
   }
 
   logout() {
+    const user = this.currentUser();
+    if (user) {
+      this.analytics.trackEvent('logout', { username: user.username });
+    }
     this.currentUser.set(null);
     localStorage.removeItem('user');
   }

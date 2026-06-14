@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header';
+import { AnalyticsService } from './services/analytics.service';
 
 @Component({
   selector: 'app-root',
@@ -10,4 +11,5 @@ import { HeaderComponent } from './components/header/header';
 })
 export class App {
   protected readonly title = signal('OpenBooks');
+  private analytics = inject(AnalyticsService);
 }
