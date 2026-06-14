@@ -1,0 +1,26 @@
+<div class="group relative bg-white border border-gray-200 rounded-lg flex flex-col overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full">
+  <div class="aspect-h-4 aspect-w-3 bg-gray-200 sm:aspect-none group-hover:opacity-75 sm:h-80 overflow-hidden cursor-pointer" [routerLink]="['/book', book.id]">
+    <img [src]="book.imageUrl" [alt]="book.title" class="h-full w-full object-cover object-center sm:h-full sm:w-full">
+  </div>
+  <div class="flex-1 p-4 flex flex-col">
+    <div class="flex-1">
+      <p class="text-xs font-medium text-indigo-600 uppercase tracking-wider mb-1">{{ book.category }}</p>
+      <h3 class="text-sm font-bold text-gray-900 line-clamp-2 mb-1">
+        <a [routerLink]="['/book', book.id]">
+          <span aria-hidden="true" class="absolute inset-0"></span>
+          {{ book.title }}
+        </a>
+      </h3>
+      <p class="text-sm text-gray-500 mb-2 italic">by {{ book.author }}</p>
+    </div>
+    <div class="flex items-center justify-between mt-4">
+      <p class="text-lg font-bold text-gray-900">{{ book.price | currency }}</p>
+      <button 
+        (click)="addToCart($event)"
+        class="relative z-10 flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors"
+      >
+        Add to Cart
+      </button>
+    </div>
+  </div>
+</div>

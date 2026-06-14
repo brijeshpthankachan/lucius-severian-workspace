@@ -1,0 +1,161 @@
+<div class="bg-white">
+  <div class="max-w-2xl mx-auto pt-16 pb-24 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+    <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">Shopping Cart</h1>
+
+    @if (orderPlaced()) {
+      <div class="mt-12 bg-green-50 rounded-lg p-8 text-center border border-green-200">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+          <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-green-800">Order Placed Successfully!</h2>
+        <p class="mt-2 text-green-700">Thank you for your purchase. You will receive an email confirmation shortly.</p>
+        <button (click)="orderPlaced.set(false)" routerLink="/" class="mt-6 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Continue Shopping
+        </button>
+      </div>
+    } @else if (cartService.cartItems().length === 0) {
+      <div class="mt-12 text-center py-20 border-2 border-dashed border-gray-300 rounded-lg">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+        <h2 class="mt-2 text-lg font-medium text-gray-900">Your cart is empty</h2>
+        <p class="mt-1 text-sm text-gray-500">Start adding some books to your collection!</p>
+        <div class="mt-6">
+          <button routerLink="/" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Browse Catalog
+          </button>
+        </div>
+      </div>
+    } @else {
+      <form class="mt-12 lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start xl:gap-x-16">
+        <section aria-labelledby="cart-heading" class="lg:col-span-7">
+          <h2 id="cart-heading" class="sr-only">Items in your shopping cart</h2>
+
+          <ul role="list" class="border-t border-b border-gray-200 divide-y divide-gray-200">
+            @for (item of cartService.cartItems(); track item.book.id) {
+              <li class="flex py-6 sm:py-10">
+                <div class="flex-shrink-0">
+                  <img [src]="item.book.imageUrl" [alt]="item.book.title" class="w-24 h-24 rounded-md object-center object-cover sm:w-48 sm:h-48">
+                </div>
+
+                <div class="ml-4 flex-1 flex flex-col justify-between sm:ml-6">
+                  <div class="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
+                    <div>
+                      <div class="flex justify-between">
+                        <h3 class="text-sm">
+                          <a [routerLink]="['/book', item.book.id]" class="font-medium text-gray-700 hover:text-gray-800">{{ item.book.title }}</a>
+                        </h3>
+                      </div>
+                      <div class="mt-1 flex text-sm">
+                        <p class="text-gray-500">{{ item.book.category }}</p>
+                      </div>
+                      <p class="mt-1 text-sm font-medium text-gray-900">{{ item.book.price | currency }}</p>
+                    </div>
+
+                    <div class="mt-4 sm:mt-0 sm:pr-9">
+                      <label [for]="'quantity-' + item.book.id" class="sr-only">Quantity, {{ item.book.title }}</label>
+                      <select 
+                        [id]="'quantity-' + item.book.id" 
+                        [value]="item.quantity"
+                        (change)="cartService.updateQuantity(item.book.id, +$any($event.target).value)"
+                        class="max-w-full rounded-md border border-gray-300 py-1.5 text-base leading-5 font-medium text-gray-700 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      >
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                      </select>
+
+                      <div class="absolute top-0 right-0">
+                        <button (click)="cartService.removeFromCart(item.book.id)" type="button" class="-m-2 p-2 inline-flex text-gray-400 hover:text-gray-500">
+                          <span class="sr-only">Remove</span>
+                          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p class="mt-4 flex text-sm text-gray-700 space-x-2">
+                    <svg class="flex-shrink-0 h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                    </svg>
+                    <span>In stock</span>
+                  </p>
+                </div>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <!-- Order summary -->
+        <section aria-labelledby="summary-heading" class="mt-16 bg-gray-50 rounded-lg px-4 py-6 sm:p-6 lg:p-8 lg:mt-0 lg:col-span-5">
+          <h2 id="summary-heading" class="text-lg font-medium text-gray-900">Order summary</h2>
+
+          <dl class="mt-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <dt class="text-sm text-gray-600">Subtotal</dt>
+              <dd class="text-sm font-medium text-gray-900">{{ cartService.totalPrice() | currency }}</dd>
+            </div>
+            <div class="border-t border-gray-200 pt-4 flex items-center justify-between">
+              <dt class="flex items-center text-sm text-gray-600">
+                <span>Shipping estimate</span>
+                <a href="#" class="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500">
+                  <span class="sr-only">Learn more about how shipping is calculated</span>
+                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.94 6.94a.75.75 0 111.06 1.06L9.06 9h.19a.75.75 0 010 1.5h-1a.75.75 0 010-1.5h.19l.75-.75-1.06-1.06zM11 13a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                  </svg>
+                </a>
+              </dt>
+              <dd class="text-sm font-medium text-gray-900">$0.00</dd>
+            </div>
+            <div class="border-t border-gray-200 pt-4 flex items-center justify-between">
+              <dt class="flex text-sm text-gray-600">
+                <span>Tax estimate</span>
+                <a href="#" class="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500">
+                  <span class="sr-only">Learn more about how tax is calculated</span>
+                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.94 6.94a.75.75 0 111.06 1.06L9.06 9h.19a.75.75 0 010 1.5h-1a.75.75 0 010-1.5h.19l.75-.75-1.06-1.06zM11 13a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                  </svg>
+                </a>
+              </dt>
+              <dd class="text-sm font-medium text-gray-900">$0.00</dd>
+            </div>
+            <div class="border-t border-gray-200 pt-4 flex items-center justify-between">
+              <dt class="text-base font-medium text-gray-900">Order total</dt>
+              <dd class="text-base font-medium text-gray-900">{{ cartService.totalPrice() | currency }}</dd>
+            </div>
+          </dl>
+
+          <div class="mt-6">
+            <button 
+              type="button" 
+              (click)="checkout()"
+              [disabled]="isCheckingOut()"
+              class="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              @if (isCheckingOut()) {
+                <span class="flex items-center justify-center">
+                  <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Processing...
+                </span>
+              } @else {
+                Checkout
+              }
+            </button>
+          </div>
+        </section>
+      </form>
+    }
+  </div>
+</div>

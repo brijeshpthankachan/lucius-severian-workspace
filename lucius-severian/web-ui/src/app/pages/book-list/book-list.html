@@ -1,0 +1,16 @@
+<div class="bg-gray-50 min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="md:flex md:items-center md:justify-between mb-8">
+      <div class="flex-1 min-w-0">
+        <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">Featured Collection</h2>
+        <p class="mt-2 text-lg text-gray-500">Discover your next favorite story among our curated selection of classics and new releases.</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+      @for (book of (books$ | async); track book.id) {
+        <app-book-card [book]="book"></app-book-card>
+      }
+    </div>
+  </div>
+</div>
