@@ -62,7 +62,7 @@ jobs:
         env:
           GITOPS_REPO: brijeshpthankachan/gitops-k8s-config
           # Assumes a personal access token is stored in repository secrets
-          GH_PAT: ${{ secrets.PAT_TOKEN }}
+          GH_PAT: ${{ secrets.GITOPS_PAT }}
         run: |
           # Clone the repository
           git clone https://x-access-token:${GH_PAT}@github.com/${GITOPS_REPO}.git gitops-repo
