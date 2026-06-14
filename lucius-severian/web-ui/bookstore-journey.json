@@ -1,0 +1,78 @@
+{
+  "title": "Bookstore User Journey",
+  "description": "Visualizes user flow, book popularity, and conversion revenue from OTel analytics.",
+  "tags": ["business", "analytics", "web-ui"],
+  "version": "v5",
+  "layout": [
+    { "h": 6, "w": 6, "x": 0, "y": 0, "i": "total-sessions" },
+    { "h": 6, "w": 6, "x": 6, "y": 0, "i": "total-revenue" },
+    { "h": 10, "w": 6, "x": 0, "y": 6, "i": "conversion-funnel" },
+    { "h": 10, "w": 6, "x": 6, "y": 6, "i": "popular-books" }
+  ],
+  "widgets": [
+    {
+      "id": "total-sessions",
+      "title": "Total Unique Sessions",
+      "panelType": "value",
+      "query": {
+        "queryType": "clickhouse_sql",
+        "requestType": "scalar",
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "SELECT count(DISTINCT value) as count FROM signoz_traces.distributed_signoz_index_v2 WHERE tag_key = 'session.id' AND serviceName = 'web-ui'",
+            "disabled": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "total-revenue",
+      "title": "Total Revenue (Sales)",
+      "panelType": "value",
+      "query": {
+        "queryType": "clickhouse_sql",
+        "requestType": "scalar",
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "SELECT sum(f64_tag_value) as revenue FROM signoz_traces.distributed_signoz_index_v2 WHERE spanName = 'purchase' AND tag_key = 'total_price'",
+            "disabled": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "conversion-funnel",
+      "title": "Conversion Funnel",
+      "panelType": "bar",
+      "query": {
+        "queryType": "clickhouse_sql",
+        "requestType": "table",
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "SELECT spanName as event, count(*) as count FROM signoz_traces.distributed_signoz_index_v2 WHERE spanName IN ('app_start', 'cart_add', 'checkout_start', 'purchase') GROUP BY spanName ORDER BY count DESC",
+            "disabled": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "popular-books",
+      "title": "Top Viewed Books",
+      "panelType": "table",
+      "query": {
+        "queryType": "clickhouse_sql",
+        "requestType": "table",
+        "clickhouse_sql": [
+          {
+            "name": "A",
+            "query": "SELECT value as book, count(*) as views FROM signoz_traces.distributed_signoz_index_v2 WHERE spanName = 'book_view' AND tag_key = 'book_title' GROUP BY value ORDER BY views DESC LIMIT 10",
+            "disabled": false
+          }
+        ]
+      }
+    }
+  ]
+}
