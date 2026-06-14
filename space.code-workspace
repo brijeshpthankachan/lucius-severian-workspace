@@ -1,0 +1,3 @@
+{
+"folders" :[{"path":".", "name": "web-ui"},{"path":"../gitops-k8s-config","name":"gitops-k8s-config"}]
+}
