@@ -5,15 +5,14 @@ FROM node:26-alpine AS builder
 
 WORKDIR /app
 
-RUN npm install -g pnpm
+# Migration to npm to resolve pnpm lockfile sync issues
+COPY package.json package-lock.json* ./
 
-COPY package.json pnpm-lock.yaml ./
-
-RUN pnpm install --frozen-lockfile --config.dangerouslyAllowAllBuilds=true
+RUN npm ci || npm install
 
 COPY . .
 
-RUN pnpm run build
+RUN npm run build
 
 # ---------------------------------------
 # Stage 2: Serve with Nginx
