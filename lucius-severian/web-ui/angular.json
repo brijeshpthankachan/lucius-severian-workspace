@@ -41,7 +41,6 @@
               }
             ],
             "browser": "src/main.ts",
-            "outputMode": "server",
             "security": {
               "allowedHosts": [
                 "localhost",
@@ -49,10 +48,6 @@
                 "angular.local",
                 "angular.local:8080"
               ]
-            },
-            "server": "src/main.server.ts",
-            "ssr": {
-              "entry": "src/server.ts"
             },
             "styles": [
               "src/styles.css"

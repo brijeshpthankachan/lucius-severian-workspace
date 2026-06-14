@@ -5,10 +5,7 @@
     "@angular/core": "^22.0.0",
     "@angular/forms": "^22.0.0",
     "@angular/platform-browser": "^22.0.0",
-    "@angular/platform-server": "^22.0.0",
     "@angular/router": "^22.0.0",
-    "@angular/ssr": "^22.0.1",
-    "express": "^5.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -17,7 +14,6 @@
     "@angular/cli": "^22.0.1",
     "@angular/compiler-cli": "^22.0.0",
     "@tailwindcss/postcss": "^4.1.12",
-    "@types/express": "^5.0.1",
     "@types/node": "^20.17.19",
     "jsdom": "^28.0.0",
     "postcss": "^8.5.3",
@@ -40,7 +36,6 @@
   "scripts": {
     "build": "ng build",
     "ng": "ng",
-    "serve:ssr:web-ui": "node dist/web-ui/server/server.mjs",
     "start": "ng serve",
     "test": "ng test",
     "watch": "ng build --watch --configuration development"
